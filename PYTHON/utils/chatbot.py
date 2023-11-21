@@ -20,7 +20,14 @@ class ChatBot:
         max_tokens_contexto   = 8000, 
         max_tokens            = 150
         ):
-        
+        """_summary_
+
+        Args:
+            model (str, optional): _description_. Defaults to "gpt-3.5-turbo-1106".
+            directiva_del_sistema (str, optional): _description_. Defaults to "You're a helpful assistant".
+            max_tokens_contexto (int, optional): _description_. Defaults to 8000.
+            max_tokens (int, optional): _description_. Defaults to 150.
+        """        
         self.client     = openai.OpenAI()
         self.cm         = ContextManager(
             model                 = model, 
