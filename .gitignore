@@ -2,3 +2,4 @@
 PYTHON/utils.egg-info/
 PYTHON/utils/__pycache__/
 .env
+.venv/
