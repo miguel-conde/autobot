@@ -51,7 +51,5 @@ typing-inspect==0.9.0
 typing_extensions==4.6.0
 tzdata==2023.3
 urllib3==2.0.2
-# Editable install with no version control (utils==0.1)
--e c:\a\tst_lightweight\python
 virtualenv==20.24.5
 yarl==1.9.2

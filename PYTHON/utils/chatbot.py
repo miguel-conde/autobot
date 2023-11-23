@@ -1,5 +1,5 @@
 import openai
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 import os
 
 from utils.contextmanager import ContextManager
