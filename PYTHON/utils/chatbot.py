@@ -70,7 +70,7 @@ class ChatBot:
                 mensaje_usuario = input(bold(blue("Usuario: ")))
                 if mensaje_usuario.lower() == "salir":
                     print(bold(red("Chatbot: ¡Que te vaya bien!")))
-                    self.cm.print_history()
+                    # self.cm.print_history()
                     break
                 self.cm.add_msg({'role': 'user', 'content': mensaje_usuario})
                 
