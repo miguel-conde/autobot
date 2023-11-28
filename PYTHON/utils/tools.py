@@ -45,8 +45,13 @@ def num_tokens_from_messages(messages, model="gpt-3.5-turbo-0613"):
     num_tokens = 0
     for message in messages:
         num_tokens += tokens_per_message
+        if not isinstance(message, dict):
+                continue
         for key, value in message.items():
-            num_tokens += len(encoding.encode(value))
+            if key == 'function_call' or key == 'tool_calls':
+                continue
+            if value != None:
+                num_tokens += len(encoding.encode(value))
             if key == "name":
                 num_tokens += tokens_per_name
     num_tokens += 3  # every reply is primed with <|start|>assistant<|message|>

@@ -27,7 +27,7 @@ def get_args():
 def main():
     
     args = get_args()
-    print(args.personality)
+    # print(args.personality)
     
     cb = ChatBot(
         model                 = args.model, 
@@ -35,7 +35,7 @@ def main():
         max_tokens            = int(gs.prj_cfg.default_max_tokens), 
         max_tokens_contexto   = int(gs.prj_cfg.default_max_tokens_contexto)
         )
-    print(cb.cm.get_history())
+    # print(cb.cm.get_history())
 #
     cb.run_chatbot()
 #
