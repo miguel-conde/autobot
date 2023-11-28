@@ -50,6 +50,14 @@ class ChatBot:
         
     @retry(wait=wait_random_exponential(multiplier=1, max=40), stop=stop_after_attempt(3))
     def chat_completion_request(self, tool_choice="none", **kwargs):
+        """_summary_
+
+        Args:
+            tool_choice (str, optional): _description_. Defaults to "none".
+
+        Returns:
+            _type_: _description_
+        """        
         respuesta = self.client.chat.completions.create(
                     model       = self.model,  
                     messages    = self.cm.historial_mensajes, 
@@ -92,12 +100,14 @@ class ChatBot:
                     # self.cm.add_msg(mensaje_respuesta.dict())
                     self.cm.add_msg(mensaje_respuesta)
                     for tool_call in tool_calls:
+                        # Ejecutamos la función localmente
                         function_name = tool_call.function.name
                         function_to_call = ChatBot.available_functions[function_name]
                         function_args = json.loads(tool_call.function.arguments)
                         function_response = function_to_call(
                             **function_args,
                         )
+                        # Añadimos el resultado al contecto
                         self.cm.add_msg(
                             {
                                 "tool_call_id": tool_call.id,
@@ -106,6 +116,8 @@ class ChatBot:
                                 "content": function_response,
                             }
                         )
+                        
+                    # Pasamos al LLM el contecto actualizado con el resultado de la función 
                     # segunda_respuesta = self.client.chat.completions.create(
                     #     model       = self.model,  
                     #     messages    = self.cm.historial_mensajes, 
