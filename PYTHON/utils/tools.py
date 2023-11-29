@@ -108,3 +108,37 @@ tool_current_weather = {
             },
         }
 
+tool_exec_local_code = {
+    "type": "function",
+    "function": {
+        "name": "execute",
+        "description": "Execute locally the python code provided as text",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "description": "Python code to be executed locally"
+                },
+            },
+            "required": ["code"]
+        },
+    },
+}
+
+from utils.codeinterpreter import PythonInterpreter
+
+the_interpreter = PythonInterpreter()
+
+def execute(code):
+    return the_interpreter.execute(code)
+
+available_functions = {
+    'get_current_weather': get_current_weather,
+    'execute': execute,
+    }
+
+tools_mmm = [
+    tool_exec_local_code
+]
+
