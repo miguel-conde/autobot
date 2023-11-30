@@ -16,7 +16,7 @@ class PythonInterpreter:
         Returns:
             _type_: _description_
         """        
-        print(f"CODE:\n\n {code}")
+        print(f"CODE INTERPRETER INPUT CODE:\n\n {code}")
         try:
             # Ejecutar el código
             exec(code, self.env)
@@ -24,7 +24,7 @@ class PythonInterpreter:
             if 'res' in self.env:
                 self.last_result = self.env['res']
                 del self.env['res']
-                print(f"res = {self.last_result}")
+                print(f"CODE INTERPRETER res = {self.last_result}")
                 return self.last_result
             else:
                 self.last_result = None

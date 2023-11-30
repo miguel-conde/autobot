@@ -108,6 +108,8 @@ tool_current_weather = {
             },
         }
 
+### TOOL: EXEC LOCAL CODE
+
 tool_exec_local_code = {
     "type": "function",
     "function": {
@@ -126,6 +128,7 @@ tool_exec_local_code = {
     },
 }
 
+
 from utils.codeinterpreter import PythonInterpreter
 
 the_interpreter = PythonInterpreter()
@@ -133,12 +136,48 @@ the_interpreter = PythonInterpreter()
 def execute(code):
     return the_interpreter.execute(code)
 
+### TOOL: ADSTOCK FUNCTION
+from mmm.tools import calculate_geom_ad_stock
+
+the_interpreter.env["calculate_geom_ad_stock"] = calculate_geom_ad_stock
+
+tool_calculate_geom_ad_stock = {
+    "type": "function",
+    "function": {
+        "name": "calculate_geom_ad_stock",
+        "description": "Calculate the geometric 'ad stock' of a data series by applying a decay factor.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "series": {
+                    "type": "List[float]",
+                    "description": "List of values representing the investment or advertising impact in each period."
+                },
+                "decay_factor": {
+                    "type": "float",
+                    "description": "Decay factor that is applied to the accumulation of ad stock. If it is greater than 1, it is considered as a percentage and is internally divided by 100."
+                },
+                "initial_value": {
+                    "type": "float",
+                    "description": "Initial ad stock value. Defaults to 0."
+                },
+            },
+            "required": ["series", "decay_factor"]
+        },
+    },
+}
+
+
+### AVAILABLE FUNCTIONS & TOOLS
+
 available_functions = {
     'get_current_weather': get_current_weather,
     'execute': execute,
+    'calculate_geom_adstock': calculate_geom_ad_stock
     }
 
 tools_mmm = [
-    tool_exec_local_code
+    tool_exec_local_code,
+    tool_calculate_geom_ad_stock
 ]
 

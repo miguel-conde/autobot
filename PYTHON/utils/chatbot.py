@@ -70,6 +70,7 @@ class ChatBot:
                         max_tokens  = self.max_tokens,
                         tools       = self.tools,
                         tool_choice = tool_choice,
+                        temperature = 0,
                         **kwargs
                     )
             return respuesta
@@ -123,7 +124,7 @@ class ChatBot:
                     print(bold(red("Chatbot: ¡Que te vaya bien!")))
                     # self.cm.print_history()
                     break
-                self.cm.add_msg({'role': 'user', 'content': mensaje_usuario})
+                self.cm.add_msg({'role': 'user', 'content': mensaje_usuario + " Recuerda que en el codigo que generes para ejecutar localmente debes asignar a la variable 'res' el texto que te permita saber el resultado que tu necesitas."})
                 
                 respuesta = self.chat_completion_request(tool_choice = "auto", **kwargs)
 
