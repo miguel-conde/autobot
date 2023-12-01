@@ -1,3 +1,3 @@
 from mmm.tools import (
-    calculate_geom_ad_stock
+    calculate_geom_ad_stock, R2,
 )
