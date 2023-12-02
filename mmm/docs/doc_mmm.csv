@@ -1,0 +1,15 @@
+﻿FUNCIÓN;OBJETIVO;ARGUMENTOS;RETURN;EJEMPLO
+R2();"Calcula la bondad del ajuste de un modelo estadístico.
+
+Este método calcula el coeficiente de determinación (R²), que es una medida de qué tan bien las variables independientes predicen la variable dependiente. Un R² más alto indica un mejor ajuste del modelo.";"fit : sm.regression.linear_model.RegressionResultsWrapper
+Un modelo ajustado utilizando la biblioteca statsmodels. Este objeto contiene tanto los residuos como la variable dependiente del modelo.";"float
+El coeficiente de determinación R² del modelo.";
+calculate_geom_ad_stock;"Calcula el 'ad stock' geométrico de una serie de datos aplicando un factor de decaimiento.
+
+El 'ad stock' es un concepto en marketing y economía que representa el impacto acumulado de la publicidad a lo largo del tiempo. Esta función aplica un modelo de ad stock geométrico, donde el efecto de la publicidad se deprecia de forma geométrica en cada período.";"series : List[float]
+Lista de valores que representan la inversión o impacto publicitario en cada período.
+decay_factor : float
+Factor de decaimiento que se aplica a la acumulación de ad stock. Si es mayor que 1, se considera como porcentaje y se divide por 100.
+initial_value : float, optional
+Valor inicial de ad stock. Por defecto es 0.";"List[float]
+Lista de valores actualizados representando el ad stock acumulado.";

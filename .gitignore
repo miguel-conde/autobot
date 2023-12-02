@@ -7,3 +7,6 @@ mmm.egg-info/
 mmm/__pycache__/
 mmm/html/
 PYTHON/notebooks/db/
+PYTHON/mis_tests/__pycache__/
+PYTHON/tests/__pycache__/
+test_data/

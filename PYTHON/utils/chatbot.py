@@ -9,6 +9,7 @@ from utils.tools import bold, blue, red
 # from utils.tools import tool_current_weather, get_current_weather, tool_exec_local_code
 # from utils.codeinterpreter import PythonInterpreter
 from utils.cleanJSON import JSONCleaner
+from utils.docretriever import DocRetriever
 
 
 # Cargar variables de entorno del archivo .env
@@ -152,7 +153,7 @@ class ChatBot:
                         else:
                             function_response = "Esa función no existe"
                         
-                        # Añadimos el resultado al contecto
+                        # Añadimos el resultado al contexto
                         self.cm.add_msg(
                             {
                                 "tool_call_id": tool_call.id,
