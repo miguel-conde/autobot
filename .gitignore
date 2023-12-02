@@ -3,3 +3,6 @@ PYTHON/utils.egg-info/
 PYTHON/utils/__pycache__/
 .env
 .venv/
+mmm.egg-info/
+mmm/__pycache__/
+mmm/html/

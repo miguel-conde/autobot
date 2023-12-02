@@ -45,6 +45,8 @@ class ContextManager:
         """_summary_
         """        
         for item in self.historial_mensajes:
+            if not isinstance(item, dict): 
+                continue
             print(f"{item['role']}: {item['content']}")
             
             
