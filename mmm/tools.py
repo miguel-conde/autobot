@@ -1,3 +1,5 @@
+import numpy as np
+import statsmodels.api as sm
 from typing import List
 
 def calculate_geom_ad_stock(series: List[float], decay_factor: float, initial_value: float = 0) -> List[float]:
@@ -32,3 +34,35 @@ def calculate_geom_ad_stock(series: List[float], decay_factor: float, initial_va
             updated_series[i] = updated_series[i] + decay_factor * updated_series[i-1]
 
     return updated_series
+
+
+
+def R2(fit: sm.regression.linear_model.RegressionResultsWrapper) -> float:
+    """
+    Calcula la bondad del ajuste de un modelo estadístico.
+
+    Este método calcula el coeficiente de determinación (R²), que es una medida de qué tan bien
+    las variables independientes predicen la variable dependiente. Un R² más alto indica un mejor ajuste
+    del modelo.
+
+    Args:
+        fit (sm.regression.linear_model.RegressionResultsWrapper): Un modelo ajustado utilizando la biblioteca
+                                                                   statsmodels. Este objeto contiene tanto los residuos 
+                                                                   como la variable dependiente del modelo.
+
+    Returns:
+        float: El coeficiente de determinación R² del modelo.
+    """
+    # Obteniendo los residuos del modelo
+    residuals = fit.resid
+
+    # Calculando la suma de cuadrados de los residuos
+    ss_res = np.sum(residuals**2)
+
+    # Calculando la suma total de cuadrados
+    ss_tot = np.sum((fit.model.endog - np.mean(fit.model.endog))**2)
+
+    # Calculando R2
+    r2 = 1 - (ss_res / ss_tot)
+
+    return r2
