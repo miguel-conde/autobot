@@ -12,9 +12,16 @@ the_folders.DIR_DATA = os.path.join(the_folders.DIR_ROOT, "data")
 the_folders.DIR_DATA_RAW = os.path.join(the_folders.DIR_DATA, "raw")
 the_folders.DIR_DATA_CLEAN = os.path.join(the_folders.DIR_DATA, "clean")
 
+the_folders.VECTORSTORE = os.path.join(the_folders.DIR_ROOT, "db")
+the_folders.MMM         = os.path.join(the_folders.DIR_ROOT, "mmm")
+the_folders.MMM_DOCS    = os.path.join(the_folders.MMM, "docs") 
+
 the_files = prjSettings()
 
 the_files.CFG_FILE = os.path.join(the_folders.DIR_ROOT, "config.ini")
+
+the_files.MMM_DOCS = os.path.join(the_folders.MMM_DOCS, 'doc_mmm.csv')
+
 
 ## CONSTANTS
 

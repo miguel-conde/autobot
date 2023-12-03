@@ -5,13 +5,14 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import Chroma
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.document_loaders import DirectoryLoader, CSVLoader
+import os
 
 dotenv.load_dotenv('.env')
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 class DocRetriever:
     """
-    A class for retrieving and processing documents.
+    A class for retrieving relevant documents based on a given query.
 
     Args:
         persist_directory (str): The directory to persist the vector database.
@@ -24,13 +25,13 @@ class DocRetriever:
     Attributes:
         persist_directory (str): The directory to persist the vector database.
         docs_directory (str): The directory containing the documents.
-        embedding (OpenAIEmbeddings): The embedding model for generating document embeddings.
-        vectordb (Chroma): The vector database for storing document embeddings.
-        retriever (Retriever): The retriever for searching and retrieving documents.
+        embedding (OpenAIEmbeddings): The OpenAI embeddings used for vectorization.
+        vectordb (Chroma): The Chroma vector database.
+        retriever (Retriever): The retriever for retrieving relevant documents.
 
     Methods:
-        None
-
+        __init__: Initialize the DocRetriever class.
+        get_relevant_documents: Get the relevant documents for a given query.
     """
 
     def __init__(
@@ -43,6 +44,7 @@ class DocRetriever:
             k = 1,
             **loader_kwargs
             ) -> None:
+        
         """
         Initialize the DocRetriever class.
 
@@ -54,6 +56,10 @@ class DocRetriever:
             search_type (str, optional): The type of search algorithm to use. Defaults to 'mmr'.
             **loader_kwargs: Additional keyword arguments to be passed to the loader.
         """
+
+        if not os.path.exists(docs_directory):
+            # El directorio no existe
+            raise Exception(f"El directorio '{docs_directory}' no existe.")
         
         self.persist_directory = persist_directory
         self.docs_directory = docs_directory
@@ -102,3 +108,17 @@ class DocRetriever:
             search_type=search_type,
             search_kwargs={"k": k},
             )
+        
+    
+    # get relevant documents
+    def get_relevant_documents(self, query: str):
+        """
+        Get the relevant documents for a given query.
+
+        Args:
+            query (str): The query to search for.
+
+        Returns:
+            List[str]: The relevant documents.
+        """
+        return self.retriever.get_relevant_documents(query)
