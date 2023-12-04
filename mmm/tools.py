@@ -2,6 +2,8 @@ import numpy as np
 import statsmodels.api as sm
 from typing import List
 
+from typing import List
+
 def calculate_geom_ad_stock(series: List[float], decay_factor: float, initial_value: float = 0) -> List[float]:
     """
     Calcula el 'ad stock' geométrico de una serie de datos aplicando un factor de decaimiento.
@@ -18,6 +20,15 @@ def calculate_geom_ad_stock(series: List[float], decay_factor: float, initial_va
 
     Returns:
         List[float]: Lista de valores actualizados representando el ad stock acumulado.
+
+    Example:
+    ```
+        >>> series = [100, 200, 300, 400]
+        >>> decay_factor = 0.9
+        >>> initial_value = 50
+        >>> calculate_geom_ad_stock(series, decay_factor, initial_value)
+        [50.0, 140.0, 266.0, 431.4]
+    ```
     """
     updated_series = series.copy()
 
@@ -37,6 +48,9 @@ def calculate_geom_ad_stock(series: List[float], decay_factor: float, initial_va
 
 
 
+import numpy as np
+import statsmodels.api as sm
+
 def R2(fit: sm.regression.linear_model.RegressionResultsWrapper) -> float:
     """
     Calcula la bondad del ajuste de un modelo estadístico.
@@ -52,6 +66,17 @@ def R2(fit: sm.regression.linear_model.RegressionResultsWrapper) -> float:
 
     Returns:
         float: El coeficiente de determinación R² del modelo.
+
+    Example:
+    ```
+        >>> import statsmodels.api as sm
+        >>> import numpy as np
+        >>> x = np.array([1, 2, 3, 4, 5])
+        >>> y = np.array([2, 4, 6, 8, 10])
+        >>> model = sm.OLS(y, x).fit()
+        >>> R2(model)
+        1.0
+    ```
     """
     # Obteniendo los residuos del modelo
     residuals = fit.resid

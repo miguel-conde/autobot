@@ -1,5 +1,6 @@
 import tiktoken
 import json
+from utils import globalsettings as gs
 
 
 # https://github.com/openai/openai-cookbook/blob/main/examples/How_to_count_tokens_with_tiktoken.ipynb
@@ -136,6 +137,43 @@ the_interpreter = PythonInterpreter()
 def execute(code):
     return the_interpreter.execute(code)
 
+### TOOL: DOCUMENTATION RETRIEVER
+
+tool_documentation_retriever = {
+    "type": "function",
+    "function": {
+        "name": "retrieve_doc",
+        "description": "Search in loaded documents to find useful functions to use in a prioritary manner",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": "The query to search for in the loaded documents"
+                },
+            },
+            "required": ["query"]
+        },
+    },
+}
+
+from utils.docretriever import DocRetriever
+
+persist_directory = gs.the_folders.VECTORSTORE
+docs_directory    = gs.the_folders.MMM_DOCS
+loader_kwargs = {'encoding': 'utf-8', 'csv_args': {'delimiter': ';'}}
+
+the_doc_retriever = DocRetriever(
+    persist_directory = persist_directory, 
+    docs_directory    = docs_directory,
+    loader_kwargs     = loader_kwargs
+)
+
+def retrieve_doc(query):
+    res = the_doc_retriever.get_relevant_documents(query, search_type="mmr", k=4)
+    out = "\n\n".join([x.page_content for x in res])
+    return out
+
 ### TOOL: ADSTOCK FUNCTION
 from mmm.tools import calculate_geom_ad_stock
 
@@ -173,7 +211,8 @@ tool_calculate_geom_ad_stock = {
 available_functions = {
     'get_current_weather': get_current_weather,
     'execute': execute,
-    'calculate_geom_adstock': calculate_geom_ad_stock
+    'calculate_geom_adstock': calculate_geom_ad_stock,
+    'retrieve_doc': retrieve_doc,
     }
 
 tools_mmm = [

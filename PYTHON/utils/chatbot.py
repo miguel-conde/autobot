@@ -125,8 +125,10 @@ class ChatBot:
                     print(bold(red("Chatbot: ¡Que te vaya bien!")))
                     # self.cm.print_history()
                     break
-                self.cm.add_msg({'role': 'user', 'content': mensaje_usuario + " Recuerda que en el codigo que generes para ejecutar localmente debes asignar a la variable 'res' el texto que te permita saber el resultado que tu necesitas."})
-                
+                the_user_content = mensaje_usuario +\
+                    " Recuerda que en el codigo que generes para ejecutar localmente debes asignar a la variable 'res' el texto que te permita saber el resultado que tu necesitas." + \
+                    " Por favor, genera siempre código limpio, sin ponerlo entre ```\{python\} y ```"
+                self.cm.add_msg({'role': 'user', 'content': the_user_content})
                 respuesta = self.chat_completion_request(tool_choice = "auto", **kwargs)
 
                 mensaje_respuesta = respuesta.choices[0].message
@@ -146,7 +148,7 @@ class ChatBot:
                             except json.JSONDecodeError:
                                 cleaned_json_raw = self.the_JSON_cleaner.clean_json(tool_call.function.arguments)
                                 function_args = json.loads(cleaned_json_raw)
-                            # function_args = self.fix_json_function_args(tool_call.function.arguments)
+                            print(function_args)
                             function_response = function_to_call(
                                 **function_args,
                             )
@@ -163,7 +165,7 @@ class ChatBot:
                             }
                         )
                         
-                    # Pasamos al LLM el contecto actualizado con el resultado de la función 
+                    # Pasamos al LLM el contexto actualizado con el resultado de la función 
                     segunda_respuesta = self.chat_completion_request(tool_choice = "none", **kwargs)
                         
                     mensaje_segunda_respuesta = segunda_respuesta.choices[0].message

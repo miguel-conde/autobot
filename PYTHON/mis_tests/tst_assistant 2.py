@@ -1,6 +1,8 @@
 import openai
 from dotenv import load_dotenv
 import os
+import time
+from utils.tools import bold, blue, red
 from utils import globalsettings as gs
 
 # Cargar variables de entorno del archivo .env
@@ -19,49 +21,63 @@ file = client.files.create(
 
 # Step 1: Create an Assistant
 assistant = client.beta.assistants.create(
-    name         = "MMM Assitant",
+    name         = "MMM Assistant",
     description  = "Un copiloto para proyectos MMM, capaz de generar código y ejecutarlo localmente",
-    instructions = gs.prj_prompts.DIRECTIVA_PYTHON_PROGRAMMER2,
+    instructions = gs.prj_prompts.DIRECTIVA_PYTHON_PROGRAMMER3,
     tools        = [{"type": "retrieval"}],
-    model        = "gpt-4-1106-preview",
+    model        = "gpt-3.5-turbo-1106",
     file_ids     = [file.id]
 )
 
 # Step 2: Create a Thread
 thread = client.beta.threads.create()
 
-# Step 3: Add a Message to a Thread
-message = client.beta.threads.messages.create(
-    thread_id = thread.id,
-    role      = "user",
-    content   = "Tenemos un modelo lineal ajustado, fit_lm. Calcula su coeficiente de determinación."
-)
 
-thread_messages = client.beta.threads.messages.list(thread.id)
-print(thread_messages.data)
+while True:
+  
+  try:
+    mensaje_usuario = input(bold(blue("Usuario: ")))
+    if mensaje_usuario.lower() == "salir":
+        print(bold(red("Chatbot: ¡Que te vaya bien!")))
+        break
+      
+    # Step 3: Add a Message to a Thread
+    message = client.beta.threads.messages.create(
+        thread_id = thread.id,
+        role      = "user",
+        content   = mensaje_usuario
+    )
 
-# Step 4: Run the Assistant
-run = client.beta.threads.runs.create(
-  thread_id    = thread.id,
-  assistant_id = assistant.id,
-  # instructions=" Recuerda que en el codigo que generes para ejecutar localmente debes asignar a la variable 'res' el texto que te permita saber el resultado que tu necesitas."
-)
+    # thread_messages = client.beta.threads.messages.list(thread.id)
+    # print(thread_messages.data)
 
-# Step 5: Check the Run status
-run = client.beta.threads.runs.retrieve(
-  thread_id = thread.id,
-  run_id    = run.id
-)
+    # Step 4: Run the Assistant
+    run = client.beta.threads.runs.create(
+      thread_id    = thread.id,
+      assistant_id = assistant.id,
+    )
 
-print(run.status)
+    while True:
+      # Step 5: Check the Run status
+      run = client.beta.threads.runs.retrieve(
+        thread_id = thread.id,
+        run_id    = run.id
+      )
+      print(run.status)
 
-# Step 6: Display the Assistant's Response
-messages = client.beta.threads.messages.list(
-  thread_id = thread.id
-)
+      if run.status == 'completed':
+        # Step 6: Display the Assistant's Response
+        messages = client.beta.threads.messages.list(
+          thread_id = thread.id
+        )
 
-messages.data[0].__dict__
+        [print(x.content[0].text.value+"\n######") for x in messages.data]
 
-print(messages.data[0].content[0].text.value)
+      if run.status in ['expired', 'completed', 'failed', 'cancelled']:
+        break
+      
+      time.sleep(5)
+  except KeyboardInterrupt:
+      print(bold(red("Chatbot: Hasta la vista!")))
+      break
 
-[print(x.content[0].text.value+"\n######") for x in messages.data]

@@ -3,7 +3,7 @@ import argparse
 
 from utils import globalsettings as gs
 from utils.codeinterpreter import PythonInterpreter
-from utils.tools import tool_current_weather, tool_exec_local_code, available_functions
+from utils.tools import tool_current_weather, tool_exec_local_code, tool_documentation_retriever, available_functions
 
 the_interpreter = PythonInterpreter()
 
@@ -13,6 +13,7 @@ def execute(code):
 tools = [
     tool_current_weather,
     tool_exec_local_code,
+    tool_documentation_retriever,
     ]
     
 def get_args():
@@ -27,7 +28,7 @@ def get_args():
         "--personality",
         type    = str, 
         help    = "A brief summary of the chatbot's personality",
-        default = gs.prj_prompts.DIRECTIVA_PYTHON_PROGRAMMER
+        default = gs.prj_prompts.DIRECTIVA_PYTHON_PROGRAMMER4
         )
     args = parser.parse_args()
     print(f"Using {args.model}")

@@ -3,7 +3,14 @@ R2();"Calcula la bondad del ajuste de un modelo estadístico.
 
 Este método calcula el coeficiente de determinación (R²), que es una medida de qué tan bien las variables independientes predicen la variable dependiente. Un R² más alto indica un mejor ajuste del modelo.";"fit : sm.regression.linear_model.RegressionResultsWrapper
 Un modelo ajustado utilizando la biblioteca statsmodels. Este objeto contiene tanto los residuos como la variable dependiente del modelo.";"float
-El coeficiente de determinación R² del modelo.";
+El coeficiente de determinación R² del modelo.";"    >>> import statsmodels.api as sm
+    >>> import numpy as np
+    >>> from mmm.tools import R2
+    >>> x = np.array([1, 2, 3, 4, 5])
+    >>> y = np.array([2, 4, 6, 8, 10])
+    >>> model = sm.OLS(y, x).fit()
+    >>> R2(model)
+    1.0"
 calculate_geom_ad_stock;"Calcula el 'ad stock' geométrico de una serie de datos aplicando un factor de decaimiento.
 
 El 'ad stock' es un concepto en marketing y economía que representa el impacto acumulado de la publicidad a lo largo del tiempo. Esta función aplica un modelo de ad stock geométrico, donde el efecto de la publicidad se deprecia de forma geométrica en cada período.";"series : List[float]
@@ -12,4 +19,9 @@ decay_factor : float
 Factor de decaimiento que se aplica a la acumulación de ad stock. Si es mayor que 1, se considera como porcentaje y se divide por 100.
 initial_value : float, optional
 Valor inicial de ad stock. Por defecto es 0.";"List[float]
-Lista de valores actualizados representando el ad stock acumulado.";
+Lista de valores actualizados representando el ad stock acumulado.";"    >>> from mmm.tools import calculate_geom_ad_stock
+    >>> series = [100, 200, 300, 400]
+    >>> decay_factor = 0.9
+    >>> initial_value = 50
+    >>> calculate_geom_ad_stock(series, decay_factor, initial_value)
+    [50.0, 140.0, 266.0, 431.4]"

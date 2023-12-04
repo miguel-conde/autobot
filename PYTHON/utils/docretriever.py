@@ -19,7 +19,6 @@ class DocRetriever:
         docs_directory (str): The directory containing the documents.
         chunk_size (int, optional): The size of each text chunk. Defaults to 1000.
         chunk_overlap (int, optional): The overlap between text chunks. Defaults to 200.
-        search_type (str, optional): The type of search algorithm to use. Defaults to 'mmr'.
         **loader_kwargs: Additional keyword arguments to be passed to the loader.
 
     Attributes:
@@ -27,7 +26,6 @@ class DocRetriever:
         docs_directory (str): The directory containing the documents.
         embedding (OpenAIEmbeddings): The OpenAI embeddings used for vectorization.
         vectordb (Chroma): The Chroma vector database.
-        retriever (Retriever): The retriever for retrieving relevant documents.
 
     Methods:
         __init__: Initialize the DocRetriever class.
@@ -37,12 +35,10 @@ class DocRetriever:
     def __init__(
             self, 
             persist_directory: str, 
-            docs_directory: str, 
+            docs_directory: str,
+            loader_kwargs, 
             chunk_size: int = 1000, 
-            chunk_overlap: int = 200,
-            search_type: str = 'mmr',
-            k = 1,
-            **loader_kwargs
+            chunk_overlap: int = 200
             ) -> None:
         
         """
@@ -53,7 +49,6 @@ class DocRetriever:
             docs_directory (str): The directory containing the documents.
             chunk_size (int, optional): The size of each text chunk. Defaults to 1000.
             chunk_overlap (int, optional): The overlap between text chunks. Defaults to 200.
-            search_type (str, optional): The type of search algorithm to use. Defaults to 'mmr'.
             **loader_kwargs: Additional keyword arguments to be passed to the loader.
         """
 
@@ -62,7 +57,7 @@ class DocRetriever:
             raise Exception(f"El directorio '{docs_directory}' no existe.")
         
         self.persist_directory = persist_directory
-        self.docs_directory = docs_directory
+        self.docs_directory    = docs_directory
 
         # OpenAI embeddings
         self.embedding = OpenAIEmbeddings()
@@ -71,24 +66,24 @@ class DocRetriever:
             # Load the persisted database from disk
             print("Loading existing Vector DB")
             self.vectordb = Chroma(
-                persist_directory=persist_directory,
-                embedding_function=self.embedding
+                persist_directory  = persist_directory,
+                embedding_function = self.embedding
                 )
         else:
             print("Creating VectorDB")
 
             # Load text in docs
             loader = DirectoryLoader(
-                docs_directory, 
-                loader_cls=CSVLoader, 
-                **loader_kwargs
+                path       = docs_directory, 
+                loader_cls = CSVLoader, 
+                loader_kwargs = loader_kwargs
             )
             doc = loader.load()
 
             # Splitting the text into chunks
             text_splitter = RecursiveCharacterTextSplitter(
-                chunk_size=chunk_size, 
-                chunk_overlap=chunk_overlap
+                chunk_size    = chunk_size, 
+                chunk_overlap = chunk_overlap
                 )
             texts = text_splitter.split_documents(doc)  # Added missing self.
 
@@ -103,22 +98,29 @@ class DocRetriever:
             # Persist the db to disk
             self.vectordb.persist()
 
-        # Create retriever
-        self.retriever = self.vectordb.as_retriever(
-            search_type=search_type,
-            search_kwargs={"k": k},
-            )
+        
         
     
     # get relevant documents
-    def get_relevant_documents(self, query: str):
+    def get_relevant_documents(self, 
+                               query: str,
+                               search_type: str = 'similarity',
+                               k: int = 1):
         """
         Get the relevant documents for a given query.
 
         Args:
             query (str): The query to search for.
+            search_type (str, optional): The type of search algorithm to use. Can be “similarity” (default), “mmr”, or “similarity_score_threshold”. 
+            k (int, optional): The number of documents to retrieve. Defaults to 1.
 
         Returns:
             List[str]: The relevant documents.
         """
-        return self.retriever.get_relevant_documents(query)
+        # Create retriever
+        retriever = self.vectordb.as_retriever(
+            search_type=search_type,
+            search_kwargs={"k": k},
+        )
+        
+        return retriever.get_relevant_documents(query)
